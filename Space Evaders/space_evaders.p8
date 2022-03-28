@@ -62,13 +62,43 @@ function game_over()
 	_draw = draw_over
 end
 
-function update_over()
+function create_stars()
+	for st in all(stars) do
+			st.y += st.s
+			if st.y >= 128 then
+				st.y = 0
+				st.x = rnd(128)
+			end
+		end
+end
 
+function draw_stars()
+
+for st in all(stars) do
+		pset(st.x, st.y,6)
+	end
+
+end
+
+function update_over()
+	t=t+1
+	
+	if t%16<8 then
+		tc=7
+	else
+		tc=0
+	end
+	
+	sfx(-2)
+	create_stars()
+	if btnp(4) then _init() end
 end
 
 function draw_over()
 	cls()
+	draw_stars()
 	print("game over", 50, 50,9)
+	print("press ❎ to resume",35,60,tc)
 end
 
 function abs_box(s)
@@ -132,13 +162,7 @@ function update_game()
 	sfx(ship.csfx,2)
 	end
 	
-	for st in all(stars) do
-		st.y += st.s
-		if st.y >= 128 then
-			st.y = 0
-			st.x = rnd(128)
-		end
-	end
+	create_stars()
 	
 	for ex in all(explosions) do
 		ex.t+=1
@@ -159,7 +183,7 @@ function update_game()
 					and not ship.imm then
 					ship.imm = true
 					ship.h -= 1
-					if ship.h < 0 then
+					if ship.h <= 0 then
 						game_over()
 					end
 		end
@@ -209,12 +233,12 @@ function update_game()
 	
 end
 
+
+
 function draw_game()
 	cls()
 	
-	for st in all(stars) do
-		pset(st.x, st.y,6)
-	end
+	draw_stars()
 	
 	print("score: "..ship.p,10)
 	
@@ -237,9 +261,9 @@ function draw_game()
 	
 	for i=1,4 do
 		if i<ship.h then
-			spr(33, 80+6*i, 3)
+			spr(33, 90+6*i, 3)
 		else
-			spr(34, 80+6*i, 3)
+			spr(34, 90+6*i, 3)
 		end
 	end
 end
@@ -401,6 +425,7 @@ __sfx__
 00020005107100d7100d7100e7100e7100e7102300022000210000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0002001810020120201402014020020000300006000190201b0201d0201e0201e0200d0000e0001f0202202024020260202802029020180001b0001d0002d0002e00032000340003700038000000000000000000
 000200000c000230002d000000001c1001d1002310028100000001c0001d000000003b0002a2002b2002e2000000000000000000000000000000000c02021020000202f020000000000000000000000000000000
+0010000000000000002e3002e3002d3002b30028300263002230018300263002530023300213001e3001b3001a3001830000000000000000016300163001330011300103000f3000e3000e300000000000000000
 __music__
 01 04424344
 
